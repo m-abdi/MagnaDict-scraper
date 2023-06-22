@@ -17,9 +17,8 @@ export default class Page {
 
     async goto(url: string): Promise<boolean> {
         try {
-            console.log(this.root);
-            await this.root.goto(url);
             console.log(`Navigating to ${url}...`);
+            await this.root.goto(url);
             return true;
         } catch (err) {
             console.error('Could not open url: ' + url + '\n' + err);

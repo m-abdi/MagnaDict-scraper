@@ -1,0 +1,4 @@
+compiled/
+build/
+node_modules/
+.env

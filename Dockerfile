@@ -1,11 +1,16 @@
-FROM ghcr.io/puppeteer/puppeteer:20.7.3
-
+FROM node:18-alpine AS base
 WORKDIR /app
-
 COPY package.json .
-
 RUN npm install
 
-COPY . .
 
-CMD [ "npm", "run", "start" ]
+FROM base AS builder
+WORKDIR /app
+COPY . .
+RUN npm run build
+
+
+FROM base
+WORKDIR /app
+COPY --from=builder /app/build ./build/
+CMD [ "node", 'build/index.js' ]

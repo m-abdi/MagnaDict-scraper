@@ -3,7 +3,7 @@ import Export from './data/export';
 import Page from './app/page'
 import TaskRepo from './app/task';
 import runBusinessLogic from './business';
-
+import 'dotenv/config'
 
 async function main() {
     let browser = await Browser.start();

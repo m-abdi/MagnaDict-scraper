@@ -12,5 +12,5 @@ RUN npm run build
 
 FROM base
 WORKDIR /app
-COPY --from=builder /app/build ./build/
+COPY --from=builder /app/build .
 CMD [ "node", 'build/index.js' ]

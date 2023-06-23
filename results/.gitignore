@@ -1,3 +1,7 @@
 *.csv
 *.json
 *.xlsx
+*.png
+*.jpg
+*.jpeg
+*.svg

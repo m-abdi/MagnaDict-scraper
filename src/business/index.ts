@@ -2,6 +2,11 @@ import { Task } from "../app/task"
 import { Page, Browser } from "puppeteer";
 import Export from "../data/export";
 import cambridgeData from './cambridge'
+import Logger from "../app/logger";
+
+
+let logger = new Logger()
+logger = logger.child({ module: 'src/business/index.ts' })
 
 const exporter = new Export();
 
@@ -21,27 +26,32 @@ const exporter = new Export();
 
 //             // screenshot
 //             await element.screenshot({path: `results/sldkf.png`,})
-            
+
 //         }
 
 //     }
 // }
 
 
-export default async function run() {
+export default async function run(browser, page, task) {
+    logger.info({ browser: browser, page: page, task: task }, JSON.stringify({ function: "run", type: "input" }))
     const word = 'freedom'
     const language = 'en'
     try {
         const { data, word: dictionaryWord } = await cambridgeData(word);
-        console.log(await exporter.toJsonFile(data, 'results/final.json'))
+        logger.info({ data, dictionaryWord }, { function: "run", type: "output" })
+
+        // console.log(await exporter.toJsonFile(data, 'results/final.json'))
         // const picture_url = await giveMeFirstImage(
         //     word + ' ' + 'picture',
         //     browser,
         //     page
         // );
         // console.log(picture_url);
+        throw new Error("My error in run business logic");
+        
 
     } catch (e) {
-        console.error(e.message);
+        logger.error({ browser: browser, page: page, task: task }, { function: "run", type: "exception" })
     }
 }

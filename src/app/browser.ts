@@ -1,5 +1,10 @@
 import puppeteer from 'puppeteer';
 import { sleep } from './helpers';
+import Logger from './logger';
+
+let logger = new Logger()
+logger = logger.child({module: 'src/app/browser.ts'})
+
 
 export default class Browser {
 	private static instance: any
@@ -10,7 +15,8 @@ export default class Browser {
 	public static async start() {
 		if (!Browser.instance) {
 			try {
-				console.log("Opening the browser......");
+				logger.info("Opening the browser......")
+				
 				Browser.instance = await puppeteer.launch({
 					headless: process.env.NODE_ENV === 'production',
 					defaultViewport: {
@@ -24,11 +30,11 @@ export default class Browser {
 					'ignoreHTTPSErrors': true
 				})
 				// this.root = Browser.instance
-				console.log('Browser is ready.');
+				logger.info('Browser is ready.')
 				return Browser.instance
 			}
 			catch (err) {
-				console.error("Could not create a browser instance => : ", err);
+				logger.error(err.message)
 			}
 		}
 		return Browser.instance;

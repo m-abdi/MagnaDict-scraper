@@ -35,10 +35,10 @@ export default class Browser {
 			}
 			catch (err) {
 				logger.error(err.message)
+				return false
 			}
 		}
 		return Browser.instance;
-
 	}
 
 }

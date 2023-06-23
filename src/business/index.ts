@@ -1,14 +1,15 @@
-import { Task } from "../app/task"
+import TaskRepo, { Task } from "../app/task"
 import { Page, Browser } from "puppeteer";
 import Export from "../data/export";
 import cambridgeData from './cambridge'
 import Logger from "../app/logger";
-
+import giveMeFirstImage from './searchImage'
 
 let logger = new Logger()
 logger = logger.child({ module: 'src/business/index.ts' })
 
 const exporter = new Export();
+const taskRepo = new TaskRepo();
 
 // export default async function run(browser: Browser, page: Page, task: Task) {
 //     await page.goto(task.url)
@@ -33,25 +34,28 @@ const exporter = new Export();
 // }
 
 
-export default async function run(browser, page, task) {
-    logger.info({ browser: browser, page: page, task: task }, JSON.stringify({ function: "run", type: "input" }))
-    const word = 'freedom'
-    const language = 'en'
-    try {
-        const { data, word: dictionaryWord } = await cambridgeData(word);
-        logger.info({ data, dictionaryWord }, { function: "run", type: "output" })
-
-        // console.log(await exporter.toJsonFile(data, 'results/final.json'))
-        // const picture_url = await giveMeFirstImage(
-        //     word + ' ' + 'picture',
-        //     browser,
-        //     page
-        // );
-        // console.log(picture_url);
-        throw new Error("My error in run business logic");
-        
-
-    } catch (e) {
-        logger.error({ browser: browser, page: page, task: task }, { function: "run", type: "exception" })
+export default async function run(browser: Browser, page: Page) {
+    const tasks = await taskRepo.get_all()
+    for (const task of tasks) {
+        // just waiting tasks
+        if (task.status === 'waiting') {
+            logger.info({ browser: browser, page: page, task: task }, { function: "run", type: "input" })
+            const word = 'freedom'
+            const language = 'en'
+            try {
+                const { data, word: dictionaryWord } = await cambridgeData(word);
+                const picture_url = await giveMeFirstImage(
+                    word + ' ' + 'picture',
+                    browser,
+                    page
+                );
+                logger.info({ ...data, picture_url },{ function: "run", type: "result" })
+                return await exporter.toJsonFile({ ...data, picture_url }, `results/${task.name}.json`)
+            } catch (e) {
+                logger.error(e.message, { function: "run", type: "exception" })
+                return false
+            }
+        }
     }
+
 }

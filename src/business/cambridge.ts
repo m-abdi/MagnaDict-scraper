@@ -14,13 +14,13 @@ export default async function cambridgeData(word) {
   const data = [];
   for (const block of blocks) {
     const audios = block.querySelectorAll('source');
-    const type = block.querySelector('.posgram.dpos-g.hdib.lmr-5')?.text;
-    const d = { type, meanings: [] };
-    const meanings = block.querySelectorAll('.def-block');
-    for (const meaning of meanings) {
+    const partOfSpeech = block.querySelector('.posgram.dpos-g.hdib.lmr-5')?.text;
+    const d = { 'part of speech': partOfSpeech, definitions: [] };
+    const definitions = block.querySelectorAll('.def-block');
+    for (const meaning of definitions) {
       const definition: any = meaning.querySelector('.def.ddef_d.db')?.text;
       const examples: any = meaning.querySelectorAll('.examp.dexamp');
-      d.meanings.push({ definition, examples: examples.map((e) => e.rawText) } as never)
+      d.definitions.push({ definition, examples: examples.map((e) => e.rawText) } as never)
     }
     const pronunciationArray = audios
       .filter((a) =>
@@ -28,7 +28,7 @@ export default async function cambridgeData(word) {
       )
       .map((a) => 'https://dictionary.cambridge.org' + a.getAttribute('src'));
     const ph = block.querySelectorAll('.dpron-i');
-    const phonetics = ph.map((p) => {
+    const pronunciations = ph.map((p) => {
       const sourceTag = p.querySelector('source');
       const phonetic = p.text
         .replace(/\s\s+/g, ' ')
@@ -50,7 +50,7 @@ export default async function cambridgeData(word) {
       return output;
     });
     data.push({
-      phonetics,
+      pronunciations,
       ...d,
     } as never);
   }

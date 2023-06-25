@@ -26,8 +26,12 @@ export default async function run(browser: Browser, page: Page) {
                     browser,
                     page
                 );
-                logger.info({ dictionary: data, picture_url }, { function: "run", type: "result" })
-                return await exporter.toJsonFile({ dictionary: data, picture_url }, `results/${task.name}.json`)
+                const result = {word: dictionaryWord, cambridge: data, picture_url };
+                logger.info(result, { function: "run", type: "result" })
+                //  await exporter.toJsonFile(result, `results/${task.name}.json`)
+                await exporter.toElasticIndex(result)
+                return result
+
             } catch (e) {
                 logger.error(e.message, { function: "run", type: "exception" })
                 return false

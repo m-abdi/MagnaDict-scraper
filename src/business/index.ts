@@ -13,6 +13,7 @@ const taskRepo = new TaskRepo();
 
 export default async function run(browser: Browser, page: Page) {
     const tasks = await taskRepo.get_all()
+    
     for (const task of tasks) {
         // just waiting tasks
         if (task.status === 'waiting') {

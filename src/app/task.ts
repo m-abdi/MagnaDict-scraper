@@ -46,14 +46,12 @@ export default class TaskRepo {
 
     async get_all() {
         // return TaskRepo.allTasks;
-        if (process.env.EXPORT_TO === 'file') {
-            let tasks: any = []
-            try {
-                tasks = JSON.parse(fs.readFileSync('./input/tasks.json').toString())
-            } catch (e) {
-                console.log(e.message);
-                if (e.message.includes('ENOENT: no such file or directory')) {
-                    const words = Object.keys(JSON.parse(fs.readFileSync('./input/all_english_words.json').toString()))
+        let tasks: any = []
+        try {
+            tasks = JSON.parse(fs.readFileSync('./input/tasks.json').toString())
+        } catch (e) {
+            if (e.message.includes('ENOENT: no such file or directory')) {
+                const words = Object.keys(JSON.parse(fs.readFileSync('./input/all_english_words.json').toString()))
                 words.forEach((word, index) => {
                     tasks.push({
                         "id": Date.now() + index,
@@ -67,11 +65,10 @@ export default class TaskRepo {
                     })
                 })
                 fs.writeFileSync('./input/tasks.json', JSON.stringify(tasks))
-                }
             }
-            return tasks?.map(task => {
-                return new Task(task.id, task.name, task.url, task.tags, task.startAt, task.allowedDelay, task.paginationTag, task.status, task.data)
-            })
         }
+        return tasks?.map(task => {
+            return new Task(task.id, task.name, task.url, task.tags, task.startAt, task.allowedDelay, task.paginationTag, task.status, task.data)
+        })
     }
 }

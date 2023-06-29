@@ -63,6 +63,5 @@ This method uses browserless/chrome as a remote Chrome browser and sends results
 sudo docker compose up
 ```
 2.Open your web browser and go to http://localhost:5601
-http://localhost:5601
 
 3.Results are saved under the “dictionary” index in Elasticsearch.

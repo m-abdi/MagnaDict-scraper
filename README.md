@@ -1,6 +1,6 @@
 # Web Scraper for MagnaDict
 
-This web scraper is a typescript code that uses the ```puppeteer``` and ```node-html-parser``` libraries to scrape data from various online dictionaries, such as Cambridge. Other online dictionaries are under work. It enriches the scraped data with other data, such as google image search results, and stores them in a JSON file or sends them to other destinations, such as elasticsearch or an http request.
+This web scraper is a TypeScript code that belongs to Magnadict, a web service that collects and provides data from online dictionaries. It uses ```puppeteer``` and ```node-html-parser``` libraries to scrape data from sources like Cambridge and others.  It also adds relevant images from Google to enrich the data. It saves the data in a JSON file or sends it to other destinations, such as Elasticsearch or an HTTP request for further processing.
 
 
 ## How to use it
@@ -33,21 +33,21 @@ yarn run bundle
 4.Results are saved in a json file inside "results" folder.
 <br /><br />
 ## Configuration
-There are some enviromental varibales inside .env file that determine the some behaviours:
+The .env file contains some environmental variables that control some behaviors:
 
-○  "NODE_ENV":<br />
+○  NODE_ENV:<br />
 it can be set to "development" or "production", in development mode it opens chrome in headfull mode. but in production mode the chrome is headless and remote. so BROWSER_WS_ENDPOINT must be set to a valid remote chrome. like the one provided by this image: https://hub.docker.com/r/browserless/chrome
 
-<br />○  "BROWSER_WS_ENDPOINT":<br />
+<br />○  BROWSER_WS_ENDPOINT:<br />
 Read previous item.
 
-<br />○  "EXPORT_TO":<br />
+<br />○  EXPORT_TO:<br />
 It determines the exporting strategy. the default is "file" which means saving to "results" folder. It can be set to elasticsearch or http to send data to external services for storing and processing.
 
-<br />○  "EXPORT_URL":<br />
+<br />○  EXPORT_URL:<br />
 if you have set the "EXPORT_TO" to http, this value must be set too. the results are sent as a POST request to this endpoint.
 
-<br />○  "ELASTIC_*":<br />
+<br />○  ELASTIC_*:<br />
 The address and credentials needed to connect to a elasticsearch cluster.
 
 

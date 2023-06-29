@@ -1,5 +1,8 @@
 # Web Scraper for MagnaDict
 
+<p align="center">
+<img src="https://github.com/m-abdi/MagnaDict-scraper/blob/master/overview.png?raw=true" alt="overview of the project" >
+</p>
 This web scraper is a TypeScript code that belongs to Magnadict, a web service that collects and provides data from online dictionaries. It uses ```puppeteer``` and ```node-html-parser``` libraries to scrape data from sources like Cambridge and others.  It also adds relevant images from Google to enrich the data. It saves the data in a JSON file or sends it to other destinations, such as Elasticsearch or an HTTP request for further processing.
 
 

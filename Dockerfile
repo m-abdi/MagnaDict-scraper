@@ -5,4 +5,4 @@ COPY yarn.lock .
 RUN yarn
 COPY . .
 RUN yarn run build
-CMD [ "node", './build/index.js' ]
+CMD [ "node", "./build/index.js" ]

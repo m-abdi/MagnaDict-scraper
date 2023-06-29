@@ -1,16 +1,8 @@
 FROM node:18-alpine AS base
 WORKDIR /app
 COPY package.json .
-RUN npm install
-
-
-FROM base AS builder
-WORKDIR /app
+COPY yarn.lock .
+RUN yarn
 COPY . .
-RUN npm run build
-
-
-FROM base
-WORKDIR /app
-COPY --from=builder /app/build .
-CMD [ "node", 'build/index.js' ]
+RUN yarn run build
+CMD [ "node", './build/index.js' ]

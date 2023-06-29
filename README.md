@@ -51,7 +51,7 @@ It determines the exporting strategy. the default is "file" which means saving t
 if you have set the "EXPORT_TO" to http, this value must be set too. the results are sent as a POST request to this endpoint.
 
 <br />○  ELASTIC_*:<br />
-The address and credentials needed to connect to a elasticsearch cluster.
+The address and credentials needed to connect to an elasticsearch cluster.
 
 
 <br /><br />

@@ -18,23 +18,33 @@ export default async function run(browser: Browser, page: Page) {
         if (task.status === 'waiting') {
             logger.info({ browser: browser, page: page, task: task }, { function: "run", type: "input" })
             const word = task?.data?.word
-            const language = 'en'
+            const language = task?.data?.language
             try {
-                const { data, word: dictionaryWord } = await cambridgeData(word);
+                const { data, word: dictionaryWord } = await cambridgeData(task?.url, word);
+                if (data.length === 0) {
+                    logger.info('cambridge data is not available', { function: "run", type: "ignore" })
+                    continue
+                }
                 const picture_url = await giveMeFirstImage(
                     word + ' ' + 'picture',
                     browser,
                     page
                 );
-                const result = {word: dictionaryWord, cambridge: data, picture_url };
+                const result = { word: dictionaryWord, language, cambridge: data, picture_url };
                 logger.info(result, { function: "run", type: "result" })
-                //  await exporter.toJsonFile(result, `results/${task.name}.json`)
-                await exporter.toElasticIndex(result)
-                return result
 
+                // choose export strategy based on env
+                if (process.env.EXPORT_TO === 'file') {
+                    await exporter.toJsonFile(result, `./results/${new Date(Date.now()).toDateString()}.json`)
+                } else if (process.env.EXPORT_TO === 'elasticsearch') {
+                    await exporter.toElasticIndex(result)
+                } else if (process.env.EXPORT_TO === 'http') {
+                    await exporter.toHttpRequest(process.env.EXPORT_URL ?? '', result)
+                }
+                task.status = 'done'
             } catch (e) {
                 logger.error(e.message, { function: "run", type: "exception" })
-                return false
+                continue
             }
         }
     }

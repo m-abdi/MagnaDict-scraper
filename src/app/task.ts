@@ -1,4 +1,4 @@
-import tasks from './tasks.json'
+import fs from 'fs'
 
 export class Task {
     id: any
@@ -46,8 +46,32 @@ export default class TaskRepo {
 
     async get_all() {
         // return TaskRepo.allTasks;
-        return tasks?.map(task => {
-            return new Task(task.id, task.name, task.url, task.tags, task.startAt, task.allowedDelay, task.paginationTag, task.status, task.data)
-        })
+        if (process.env.EXPORT_TO === 'file') {
+            let tasks: any = []
+            try {
+                tasks = JSON.parse(fs.readFileSync('./input/tasks.json').toString())
+            } catch (e) {
+                console.log(e.message);
+                if (e.message.includes('ENOENT: no such file or directory')) {
+                    const words = Object.keys(JSON.parse(fs.readFileSync('./input/all_english_words.json').toString()))
+                words.forEach((word, index) => {
+                    tasks.push({
+                        "id": Date.now() + index,
+                        "name": `Cambridge - ${word}`,
+                        "url": `https://dictionary.cambridge.org/dictionary/english/${word}`,
+                        "status": "waiting",
+                        "data": {
+                            word,
+                            language: 'en'
+                        }
+                    })
+                })
+                fs.writeFileSync('./input/tasks.json', JSON.stringify(tasks))
+                }
+            }
+            return tasks?.map(task => {
+                return new Task(task.id, task.name, task.url, task.tags, task.startAt, task.allowedDelay, task.paginationTag, task.status, task.data)
+            })
+        }
     }
 }

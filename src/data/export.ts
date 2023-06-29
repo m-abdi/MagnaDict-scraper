@@ -1,12 +1,26 @@
 import fs from 'fs'
 import Logger from '../app/logger';
 import axios from 'axios';
+import { Client } from '@elastic/elasticsearch';
 
 let logger = new Logger()
 logger = logger.child({ module: 'src/data/exports.ts' })
 
 
+const elasticsearchClient = new Client({
+    node: 'http://localhost:9200',
+    auth: {
+        username: process.env.ELASTIC_USERNAME ?? '',
+        password: process.env.ELASTIC_PASSWORD ?? '',
+    },
+    tls: {
+        rejectUnauthorized: false
+    }
+})
+
 export default class Export {
+
+
     async toJsonFile(content: any, destination: string) {
         let data = JSON.stringify(content)
         fs.appendFile(destination, data, (r) => {
@@ -17,16 +31,11 @@ export default class Export {
     async toElasticIndex(document: any, index: string = process.env.ELASTICSEARCH_INDEX ?? 'dictionary') {
         logger.info({ index, document }, { function: "toElasticIndex", type: "input" })
         try {
-            const result = await axios.post(
-                'https://7c5befde96284bf5a82ee328a9b3e22f.us-central1.gcp.cloud.es.io:443/search-dictionary/_doc?pipeline=ent-search-generic-ingestion',
-                document,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `ApiKey ${process.env.ELASTICSEARCH_APIKEY}`
-                    },
-                }
-            );
+            const result = await elasticsearchClient.index({
+                index,
+                document
+            })
+            await elasticsearchClient.indices.refresh({ index })
             logger.info({ result }, { function: "toElasticIndex", type: "result" })
             return result
         } catch (error) {

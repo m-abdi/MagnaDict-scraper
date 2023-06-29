@@ -2,14 +2,14 @@ import fetch from 'node-fetch';
 import axios from 'axios';
 import { parse } from 'node-html-parser';
 
-export default async function cambridgeData(word) {
+export default async function cambridgeData(url: string, word: string) {
   const page = await axios.get(
-    `https://dictionary.cambridge.org/dictionary/english/${word}`
+    url, {timeout: 12000}
   );
 
   const document = parse(await page.data);
   
-  word = document.querySelector('.headword')?.text;
+  word = document.querySelector('.headword')?.text ?? word;
   const blocks = document.querySelectorAll('.pr.entry-body__el');
   const data = [];
   for (const block of blocks) {

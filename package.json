@@ -1,7 +1,7 @@
 {
-  "name": "scraper",
+  "name": "dictionary-scraper",
   "version": "1.0.0",
-  "description": "",
+  "description": "A scraper that extracts information from different online dictionary and enrich them with other online data",
   "main": "index.js",
   "devDependencies": {
     "@babel/core": "^7.22.5",
@@ -15,14 +15,15 @@
   },
   "scripts": {
     "test": "jest --detectOpenHandles",
-    "dev": "tsc src/index.ts --watch --module es2022 --outfile build/index.js && node build/index.js",
+    "bundle": "node ./build/index.js",
     "compile": "tsc src/index.ts --module es2022 --moduleResolution bundler --target es2022 --outDir compiled",
     "build": "npm run compile && node build.js && rm -r compiled",
     "start": "npm run build && node build/index.js"
   },
-  "author": "",
+  "author": "Mehdi Abdi",
   "license": "ISC",
   "dependencies": {
+    "@elastic/elasticsearch": "^8.8.1",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "node-fetch": "^3.3.1",

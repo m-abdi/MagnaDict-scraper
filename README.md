@@ -65,3 +65,8 @@ sudo docker compose up
 2.Open your web browser and go to http://localhost:5601
 
 3.Results are saved under the “dictionary” index in Elasticsearch.
+
+
+<br /><br />
+## Data
+You can find a large list of English words in the "input" folder. You can add or delete words as you wish. The first time you run the app, it will create a file named "tasks.json" in the same folder. This file keeps track of the execution status of each word. Do not modify it.

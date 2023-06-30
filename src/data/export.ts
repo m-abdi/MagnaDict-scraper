@@ -8,10 +8,10 @@ logger = logger.child({ module: 'src/data/exports.ts' })
 
 
 const elasticsearchClient = new Client({
-    node: process.env.ELASTIC_HOST,
+    node: process.env.ELASTIC_HOST ?? 'http://localhost:9200',
     auth: {
-        username: process.env.ELASTIC_USERNAME ?? '',
-        password: process.env.ELASTIC_PASSWORD ?? '',
+        username: process.env.ELASTIC_USERNAME ?? 'elastic',
+        password: process.env.ELASTIC_PASSWORD ?? 'elastic',
     },
     tls: {
         rejectUnauthorized: false
@@ -21,14 +21,14 @@ const elasticsearchClient = new Client({
 export default class Export {
 
 
-    async toJsonFile(content: any, destination: string) {
+    private async toJsonFile(content: any, destination: string) {
         let data = JSON.stringify(content)
         fs.appendFile(destination, data, (r) => {
             console.log(r);
         })
     }
 
-    async toElasticIndex(document: any, index: string = process.env.ELASTICSEARCH_INDEX ?? 'dictionary') {
+    private async toElasticIndex(document: any, index: string = process.env.ELASTICSEARCH_INDEX ?? 'dictionary') {
         logger.info({ index, document }, { function: "toElasticIndex", type: "input" })
         try {
             const result = await elasticsearchClient.index({
@@ -44,7 +44,7 @@ export default class Export {
         }
     }
 
-    async toHttpRequest(url: string, data: any) {
+    private async toHttpRequest(url: string, data: any) {
         logger.info({ url, data }, { function: "toHttpRequest", type: "input" })
 
         try {
@@ -56,6 +56,17 @@ export default class Export {
         } catch (error) {
             logger.error(error.message, { function: "toHttpRequest", type: "exception" })
             return false
+        }
+    }
+
+    public async save(result: any) {
+        // choose export strategy based on env
+        if (process.env.EXPORT_TO === 'file') {
+            await this.toJsonFile(result, `./results/${new Date(Date.now()).toDateString()}.json`)
+        } else if (process.env.EXPORT_TO === 'elasticsearch') {
+            await this.toElasticIndex(result)
+        } else if (process.env.EXPORT_TO === 'http') {
+            await this.toHttpRequest(process.env.EXPORT_URL ?? '', result)
         }
     }
 

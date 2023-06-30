@@ -1,7 +1,11 @@
 import Browser from "./browser";
-import { sleep } from "./helpers";
+import Logger from './logger'
 
-export default class Page {
+
+let logger = new Logger()
+logger = logger.child({ module: 'src/app/page.ts' })
+
+export class Page {
     private browser: any
     root: any
 
@@ -11,7 +15,7 @@ export default class Page {
 
     static async new(browserInstance: any) {
         const browser = await browserInstance;
-        const root = await browserInstance.newPage().then(r => r)
+        const root = await browserInstance.newPage()
         return new Page(root, browser);
     }
 
@@ -36,6 +40,26 @@ export default class Page {
         }
     }
 }
+
+
+export class PageRepo {
+
+    _pages: any[] = []
+
+    async getPages(browserInstance: Browser) {
+        if (this._pages.length === 0) {
+            const openedPages = parseInt(process.env.OPEN_PAGES ?? '1')
+            for (let i = 1; i < openedPages; i++) {
+                await Page.new(browserInstance)
+            }
+            (await browserInstance.pages()).map((page: any) => this._pages.push(page))
+			logger.info('Pages are ready.')
+        }
+        return this._pages
+    }
+}
+
+export default new PageRepo()
 
 
 //   // Wait and click on first result

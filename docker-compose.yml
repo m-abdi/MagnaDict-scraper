@@ -11,7 +11,7 @@ services:
       - 3000:3000
     environment:
       - MAX_CONCURRENT_SESSIONS=5
-      - CONNECTION_TIMEOUT=300000
+      - CONNECTION_TIMEOUT=-1
       - ENABLE_DEBUGGER=true
       - ENABLE_CORS=true
       - EXIT_ON_HEALTH_FAILURE=true

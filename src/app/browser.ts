@@ -8,9 +8,6 @@ logger = logger.child({ module: 'src/app/browser.ts' })
 
 export default class Browser {
 	private static instance: any
-	root: any;
-	pages: any
-
 
 	public static async start() {
 		if (!Browser.instance) {
@@ -27,6 +24,7 @@ export default class Browser {
 							height: 980,
 						},
 						ignoreHTTPSErrors: true,
+						protocolTimeout: 180000 // 3 minutes
 					})
 				} else {
 					// locally installed chrome
@@ -46,7 +44,6 @@ export default class Browser {
 
 				// this.root = Browser.instance
 				logger.info('Browser is ready.')
-				return Browser.instance
 			}
 			catch (err) {
 				logger.error(err.message)
@@ -54,6 +51,10 @@ export default class Browser {
 			}
 		}
 		return Browser.instance;
+	}
+
+	async pages() {
+		return Browser.instance.pages()
 	}
 
 }

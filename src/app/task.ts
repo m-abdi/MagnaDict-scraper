@@ -1,4 +1,9 @@
 import fs from 'fs'
+import Logger from './logger'
+
+let logger = new Logger()
+logger = logger.child({ module: 'src/app/task.ts' })
+
 
 export class Task {
     id: any
@@ -67,8 +72,17 @@ export default class TaskRepo {
                 fs.writeFileSync('./input/tasks.json', JSON.stringify(tasks))
             }
         }
+        logger.info("Tasks are ready", { function: "get_all - TaskRepo", type: "result" })
         return tasks?.map(task => {
             return new Task(task.id, task.name, task.url, task.tags, task.startAt, task.allowedDelay, task.paginationTag, task.status, task.data)
+        })
+    }
+
+    async update(id: string, data: any) {
+        fs.readFile('./input/tasks.json', (err, readTasks) => {
+            const tasks = JSON.parse(readTasks.toString())
+            const updatedTasks = tasks.map((task) => task.id == id ? {...task, ...data} : task)
+            fs.writeFileSync('./input/tasks.json', JSON.stringify(updatedTasks))
         })
     }
 }

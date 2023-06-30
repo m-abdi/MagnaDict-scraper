@@ -9,6 +9,13 @@ services:
     restart: always
     ports:
       - 3000:3000
+    environment:
+      - MAX_CONCURRENT_SESSIONS=5
+      - CONNECTION_TIMEOUT=300000
+      - ENABLE_DEBUGGER=true
+      - ENABLE_CORS=true
+      - EXIT_ON_HEALTH_FAILURE=true
+      - DEFAULT_IGNORE_HTTPS_ERRORS=true
     env_file:
       - .env.docker
     networks:

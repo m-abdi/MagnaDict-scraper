@@ -21,7 +21,7 @@ yarn add
 2.Change the name of .env.template file to .env
 
 
-3.Run the project
+3.Build and Run the project
 
 - If you use npm, run:
 ```sh
